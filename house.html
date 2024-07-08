@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房貸壽險</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 800px; 
+            margin: 20px auto; 
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #4caf50;
+            outline: none;
+        }
+
+        .form-group .radio-group label {
+            display: inline-block;
+            margin-right: 10px;
+            font-weight: normal;
+            width: auto; 
+        }
+
+        .form-group .radio-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .form-group .warning {
+            color: red;
+            font-size: 14px;
+        }
+
+        .form-group input[type="number"],
+        .output-group input[type="number"] {
+            width: 90%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            display: inline-block;
+            margin-right: 10px; 
+        }
+
+        button {
+            width: 100%;
+            padding: 15px 20px 15px 20px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            max-width: 200px;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .output-group {
+            margin-top: 20px;
+        }
+
+        .output-group label {
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .output-group input {
+            background-color: #e9e9e9;
+            margin-bottom: 10px;
+        }
+
+        #roc-year,
+        #roc-month,
+        #roc-day {
+            width: calc(30% - 10px); 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            display: inline-block; 
+            margin-right: 10px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form id="insurance-form">
+            <div class="form-group">
+                <label>性別</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="男"> 男</label>
+                    <label><input type="radio" name="gender" value="女"> 女</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>生日 (民國年)</label>
+                <select id="roc-year" onchange="calculateInsuranceAge()">
+                    <option value="">選擇年</option>
+                </select> 年
+                <select id="roc-month" onchange="calculateInsuranceAge()">
+                    <option value="">選擇月</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select> 月
+                <select id="roc-day" onchange="calculateInsuranceAge()">
+                    <option value="">選擇日</option>
+                </select> 日
+                <div class="warning" id="birthday-warning"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="insurance-age">投保年齡</label>
+                <input type="number" id="insurance-age" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="insurance_type">投保險種</label>
+                <select id="insurance_type">
+                    <option value="term">定期險</option>
+                    <option value="whole">終身險</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="premium_type">保費型態</label>
+                <select id="premium_type">
+                    <option value="level">平準保費</option>
+                    <option value="decreasing">遞減保費</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="payment-method">繳費方式</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="payment-method" value="monthly"> 月繳</label>
+                    <label><input type="radio" name="payment-method" value="quarterly"> 季繳</label>
+                    <label><input type="radio" name="payment-method" value="semiannually"> 半年繳</label>
+                    <label><input type="radio" name="payment-method" value="annually"> 年繳</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="loan-term">貸款年期</label>
+                <input type="number" id="loan-term">
+            </div>
+
+            <div class="form-group">
+                <label for="insurance-term">保險年期</label>
+                <input type="number" id="insurance-term">
+            </div>
+
+            <div class="form-group">
+                <label for="loan-amount">貸款金額</label>
+                <input type="number" id="loan-amount">
+            </div>
+
+            <div class="form-group">
+                <label for="insurance-amount">保險金額</label>
+                <input type="number" id="insurance-amount">
+            </div>
+
+            <button type="button" onclick="calculate()">貸款試算</button>
+
+            <div class="output-group">
+                <label for="suggested-insurance-amount">建議投保金額</label>
+                <input type="number" id="suggested-insurance-amount" readonly>
+
+                <label for="premium-per-period">每期應繳保費</label>
+                <input type="number" id="premium-per-period" readonly>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function calculateInsuranceAge() {
+            const yearSelect = document.getElementById('roc-year');
+            const monthSelect = document.getElementById('roc-month');
+            const daySelect = document.getElementById('roc-day');
+            const insuranceAgeInput = document.getElementById('insurance-age');
+            const birthdayWarning = document.getElementById('birthday-warning');
+
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const day = parseInt(daySelect.value);
+
+            if (!year || !month || !day) {
+                birthdayWarning.textContent = '請選擇完整的生日日期。';
+                insuranceAgeInput.value = '';
+                return;
+            }
+
+            birthdayWarning.textContent = '';
+            const currentDate = new Date();
+            const birthDate = new Date(year + 1911, month - 1, day);
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            insuranceAgeInput.value = age;
+        }
+
+        function populateYearSelect() {
+            const yearSelect = document.getElementById('roc-year');
+            const currentYear = new Date().getFullYear() - 1911;
+            for (let i = currentYear; i >= currentYear - 100; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        function populateDaySelect() {
+            const daySelect = document.getElementById('roc-day');
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateYearSelect();
+            populateDaySelect();
+        });
+
+        function calculate() {
+            // Calculation logic here
+            const loanAmount = parseFloat(document.getElementById('loan-amount').value) || 0;
+            const loanTerm = parseInt(document.getElementById('loan-term').value) || 0;
+            const insuranceAmount = parseFloat(document.getElementById('insurance-amount').value) || 0;
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+            // Sample calculation logic
+            const suggestedInsuranceAmount = loanAmount * 1.2; // example logic
+            const premiumPerPeriod = (insuranceAmount / loanTerm) * 0.05; // example logic
+
+            document.getElementById('suggested-insurance-amount').value = suggestedInsuranceAmount.toFixed(2);
+            document.getElementById('premium-per-period').value = premiumPerPeriod.toFixed(2);
+        }
+    </script>
+</body>
+</html>
